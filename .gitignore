@@ -1,0 +1,22 @@
+# Артефакты сборки
+*.obj
+*.exe
+*.dll
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.res
+*.nativecodeanalysis.xml
+
+# Временные файлы редакторов
+*.swp
+*.swo
+*~
+.idea/
+.vs/
+.vscode/
+
+# Файлы ОС
+Thumbs.db
+Desktop.ini
