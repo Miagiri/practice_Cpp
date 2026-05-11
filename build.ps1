@@ -23,4 +23,10 @@ link sort_l4.obj /OUT:linear-collections\c_version\sort_l4.exe /DEBUG
 
 cl /c /W4 /analyze /Zi /MD /EHsc /std:c++latest linear-collections\cpp_version\sort_l4.cpp
 link sort_l4.obj /OUT:linear-collections\cpp_version\sort_l4.exe /DEBUG
+
+cl /c /W4 /analyze /Zi /MD linear-collections\c_version\search_l5.c
+link search_l5.obj /OUT:linear-collections\c_version\search_l5.exe /DEBUG
+
+cl /c /W4 /analyze /Zi /MD /EHsc /std:c++latest linear-collections\cpp_version\search_l5.cpp
+link search_l5.obj /OUT:linear-collections\cpp_version\search_l5.exe /DEBUG
 Write-Host "Build done."
