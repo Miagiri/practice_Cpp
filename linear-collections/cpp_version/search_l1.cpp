@@ -1,42 +1,36 @@
 #include <iostream>
-using namespace std;
+#include <vector>
+#include <optional>
 
 int main() {
-
-    int arr[] = {5, 2, 8, 2, 9, 1, 2, 7, 3, 2};
-    int n = sizeof(arr) / sizeof(arr[0]);
-
-    int K = 9;
-
-    int index = -1;
-    int count = 0;
-    int i = 0;
-
-    while (i < n && index == -1) {
-        count++;
-        if (arr[i] == K) {
-            index = i;
+    const std::vector<int> data = {5, 2, 8, 2, 9, 1, 2, 7, 3, 2};
+    const int K = 9;
+    
+    size_t comparisons = 0;
+    std::optional<size_t> found;
+    
+    for (size_t i = 0; i < data.size(); ++i) {
+        ++comparisons;
+        if (data[i] == K) {
+            found = i;
+            break;
         }
-        i++;
     }
-
-    cout << "Array: ";
-    i = 0;
-    while (i < n) {
-        cout << arr[i] << " ";
-        i++;
+    
+    std::cout << "Array: ";
+    for (const auto& x : data) {
+        std::cout << x << ' ';
     }
-    cout << endl;
-
-    cout << "Search key K = " << K << endl;
-
-    if (index != -1) {
-        cout << "Index of first occurrence: " << index << endl;
+    std::cout << '\n';
+    
+    std::cout << "Search key K = " << K << '\n';
+    
+    if (found.has_value()) {
+        std::cout << "Index of first occurrence: " << *found << '\n';
     } else {
-        cout << "Index of first occurrence: -1 (number not found)" << endl;
+        std::cout << "Index of first occurrence: -1 (number not found)\n";
     }
-
-    cout << "Number of comparisons: " << count << endl;
-
+    std::cout << "Number of comparisons: " << comparisons << '\n';
+    
     return 0;
 }
