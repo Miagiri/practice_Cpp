@@ -1,36 +1,28 @@
-#include <iostream>
+#include <algorithm>
+#include <print>
 #include <vector>
-#include <optional>
+#include <format>
 
 int main() {
     const std::vector<int> data = {5, 2, 8, 2, 9, 1, 2, 7, 3, 2};
     const int K = 9;
-    
+
     size_t comparisons = 0;
-    std::optional<size_t> found;
-    
-    for (size_t i = 0; i < data.size(); ++i) {
+    auto it = std::ranges::find_if(data, [&](int x) {
         ++comparisons;
-        if (data[i] == K) {
-            found = i;
-            break;
-        }
-    }
-    
-    std::cout << "Array: ";
-    for (const auto& x : data) {
-        std::cout << x << ' ';
-    }
-    std::cout << '\n';
-    
-    std::cout << "Search key K = " << K << '\n';
-    
-    if (found.has_value()) {
-        std::cout << "Index of first occurrence: " << *found << '\n';
+        return x == K;
+    });
+
+    std::println("Array: {}", data);
+
+    std::println("Search key K = {} ", K);
+
+    if (it != data.end()) {
+        std::println("Index of first occurrence: {}", it - data.begin());
     } else {
-        std::cout << "Index of first occurrence: -1 (number not found)\n";
+        std::println("Index of first occurrence: -1 (number not found)");
     }
-    std::cout << "Number of comparisons: " << comparisons << '\n';
-    
+    std::println("Number of comparisons: {} ", comparisons);
+
     return 0;
 }
