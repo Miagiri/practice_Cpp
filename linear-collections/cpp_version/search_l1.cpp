@@ -1,7 +1,7 @@
 #include <algorithm>
+#include <format>
 #include <print>
 #include <vector>
-#include <format>
 
 int main() {
     const std::vector<int> data = {5, 2, 8, 2, 9, 1, 2, 7, 3, 2};

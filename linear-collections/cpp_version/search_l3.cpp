@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <chrono>
-#include <iostream>
+#include <format>
+#include <print>
 #include <random>
+#include <ranges>
 #include <vector>
 
 int main() {
@@ -12,31 +14,21 @@ int main() {
         static_cast<unsigned>(std::chrono::steady_clock::now().time_since_epoch().count()));
     std::uniform_int_distribution<int> dis(0, 99999);
 
-    for (size_t i = 0; i < n; i++) {
-        arr[i] = dis(gen);
-    }
+    std::ranges::generate(arr, [&] { return dis(gen); });
 
-    std::sort(arr.begin(), arr.end());
+    std::ranges::sort(arr);
 
     int key = arr[dis(gen) % n];
 
-    std::cout << "Sorted array (first 20 elements):\n";
-    for (size_t i = 0; i < 20; i++) {
-        std::cout << arr[i] << " ";
-    }
-    std::cout << "\n\n";
+    std::println("Sorted array (first 20 elements): {}", arr | std::views::take(20));
 
-    std::cout << "Search key: " << key << "\n\n";
+    std::println("Search key: {}", key);
 
     size_t linear_compare = 0;
-    int linear_index = -1;
-    for (size_t i = 0; i < n; i++) {
-        linear_compare++;
-        if (arr[i] == key) {
-            linear_index = static_cast<int>(i);
-            break;
-        }
-    }
+    auto linear_index = std::ranges::find_if(arr, [&](int x) {
+        ++linear_compare;
+        return x == key;
+    });
 
     size_t binary_compare = 0;
     int binary_index = -1;
@@ -59,10 +51,10 @@ int main() {
         }
     }
 
-    std::cout << "Linear search: " << linear_compare << " comparisons (found at index "
-              << linear_index << ")\n";
-    std::cout << "Binary search: " << binary_compare << " comparisons (found at index "
-              << binary_index << ")\n";
+    std::println("Linear search: {} comparisons (found at index {} )", linear_compare,
+                 linear_index - arr.begin());
+    std::println("Binary search: {} comparisons (found at index {} )", binary_compare,
+                 binary_index);
 
     return 0;
 }

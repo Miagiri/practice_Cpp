@@ -1,8 +1,9 @@
 #include <algorithm>
 #include <chrono>
-#include <iomanip>
-#include <iostream>
+#include <format>
+#include <print>
 #include <random>
+#include <ranges>
 #include <vector>
 
 void merge(std::vector<int>& arr, int left, int mid, int right) {
@@ -90,7 +91,7 @@ void heapSort(std::vector<int>& arr, int n) {
     }
 }
 
-void heapSortWrapper(std::vector<int>& arr, int left, int right) { heapSort(arr, right + 1); }
+void heapSortWrapper(std::vector<int>& arr, int /*left*/, int right) { heapSort(arr, right + 1); }
 
 template <typename Func> double measureTime(Func sortFunc, std::vector<int>& arr, int n) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -112,17 +113,15 @@ int main() {
     std::mt19937 gen(12345);
     std::uniform_int_distribution<int> dis(0, 999999);
 
-    std::cout << "+----------------+----------------+---------+---------+-----------+\n";
-    std::cout << "| Algorithm      | Complexity     | 1000    | 10000   | 100000    |\n";
-    std::cout << "+----------------+----------------+---------+---------+-----------+\n";
+    std::println("+----------------+----------------+---------+---------+-----------+");
+    std::println("| Algorithm      | Complexity     | 1000    | 10000   | 100000    |");
+    std::println("+----------------+----------------+---------+---------+-----------+");
 
     std::vector<double> timesMerge, timesQuick, timesHeap, timesStdSort;
 
     for (int n : sizes) {
         std::vector<int> original(n);
-        for (int i = 0; i < n; i++) {
-            original[i] = dis(gen);
-        }
+        std::ranges::generate(original, [&] { return dis(gen); });
 
         std::vector<int> arrMerge = original;
         std::vector<int> arrQuick = original;
@@ -135,24 +134,18 @@ int main() {
         timesStdSort.push_back(measureStdSort(arrStd));
     }
 
-    std::cout << std::fixed << std::setprecision(2);
-
-    std::cout << "| Merge sort     | O(N log N)     | " << std::setw(5) << timesMerge[0] << " ms | "
-              << std::setw(5) << timesMerge[1] << " ms | " << std::setw(7) << timesMerge[2]
-              << " ms |\n";
-    std::cout << "+----------------+----------------+---------+---------+-----------+\n";
-    std::cout << "| Quick sort     | O(N log N)     | " << std::setw(5) << timesQuick[0] << " ms | "
-              << std::setw(5) << timesQuick[1] << " ms | " << std::setw(7) << timesQuick[2]
-              << " ms |\n";
-    std::cout << "+----------------+----------------+---------+---------+-----------+\n";
-    std::cout << "| Heap sort      | O(N log N)     | " << std::setw(5) << timesHeap[0] << " ms | "
-              << std::setw(5) << timesHeap[1] << " ms | " << std::setw(7) << timesHeap[2]
-              << " ms |\n";
-    std::cout << "+----------------+----------------+---------+---------+-----------+\n";
-    std::cout << "| std::sort      | O(N log N)     | " << std::setw(5) << timesStdSort[0]
-              << " ms | " << std::setw(5) << timesStdSort[1] << " ms | " << std::setw(7)
-              << timesStdSort[2] << " ms |\n";
-    std::cout << "+----------------+----------------+---------+---------+-----------+\n";
+    std::println("| Merge sort     | O(N log N) | {:>5.2f} ms | {:>5.2f} ms | {:>7.2f} ms | ",
+                 timesMerge[0], timesMerge[1], timesMerge[2]);
+    std::println("+----------------+----------------+---------+---------+-----------+");
+    std::println("| Quick sort     | O(N log N) | {:>5.2f} ms | {:>5.2f} ms | {:>7.2f} ms | ",
+                 timesQuick[0], timesQuick[1], timesQuick[2]);
+    std::println("+----------------+----------------+---------+---------+-----------+");
+    std::println("| Heap sort      | O(N log N) | {:>5.2f} ms | {:>5.2f} ms | {:>7.2f} ms | ",
+                 timesHeap[0], timesHeap[1], timesHeap[2]);
+    std::println("+----------------+----------------+---------+---------+-----------+");
+    std::println("| std::sort      | O(N log N) | {:>5.2f} ms | {:>5.2f} ms | {:>7.2f} ms | ",
+                 timesStdSort[0], timesStdSort[1], timesStdSort[2]);
+    std::println("+----------------+----------------+---------+---------+-----------+");
 
     return 0;
 }

@@ -1,16 +1,19 @@
 #include <algorithm>
-#include <iostream>
+#include <format>
+#include <print>
 #include <random>
+#include <ranges>
 #include <unordered_map>
 #include <vector>
 
 int linearSearch(const std::vector<int>& arr, int key, size_t& comparisons) {
     comparisons = 0;
-    for (size_t i = 0; i < arr.size(); i++) {
-        comparisons++;
-        if (arr[i] == key) {
-            return static_cast<int>(i);
-        }
+    auto it = std::ranges::find_if(arr, [&](int x) {
+        ++comparisons;
+        return x == key;
+    });
+    if (it != arr.end()) {
+        return static_cast<int>(it - arr.begin());
     }
     return -1;
 }
@@ -55,17 +58,15 @@ int main() {
     std::uniform_int_distribution<int> dis(0, 99999);
 
     std::vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        arr[i] = dis(gen);
-    }
+    std::ranges::generate(arr, [&] { return dis(gen); });
 
     std::unordered_map<int, int> map;
-    for (int i = 0; i < n; i++) {
-        map.try_emplace(arr[i], i);
+    for (auto [i, val] : arr | std::views::enumerate) {
+        map.try_emplace(val, i);
     }
 
     std::vector<int> sortedArr = arr;
-    std::sort(sortedArr.begin(), sortedArr.end());
+    std::ranges::sort(sortedArr);
 
     int key = arr[dis(gen) % n];
 
@@ -79,24 +80,21 @@ int main() {
     size_t bucketIdx = map.bucket(key);
     size_t chainLength = map.bucket_size(bucketIdx);
 
-    std::cout << "Search key: " << key << std::endl;
-    std::cout << std::endl;
+    std::println("Search key: {}\n", key);
 
-    std::cout << "Linear search:" << std::endl;
-    std::cout << "  Index: " << linearIndex << std::endl;
-    std::cout << "  Comparisons: " << linearComparisons << std::endl;
-    std::cout << std::endl;
+    std::println("Linear search:");
+    std::println("  Index: {}", linearIndex);
+    std::println("  Comparisons: {}\n", linearComparisons);
 
-    std::cout << "Binary search:" << std::endl;
-    std::cout << "  Index: " << binaryIndex << std::endl;
-    std::cout << "  Comparisons: " << binaryComparisons << std::endl;
-    std::cout << std::endl;
+    std::println("Binary search:");
+    std::println("  Index: {}", binaryIndex);
+    std::println("  Comparisons: {}\n", binaryComparisons);
 
-    std::cout << "Hash table:" << std::endl;
-    std::cout << "  Index: " << hashIndex << std::endl;
-    std::cout << "  Bucket count: " << map.bucket_count() << std::endl;
-    std::cout << "  Load factor: " << map.load_factor() << std::endl;
-    std::cout << "  Bucket #" << bucketIdx << " chain length: " << chainLength << std::endl;
+    std::println("Hash table:");
+    std::println("  Index: {}", hashIndex);
+    std::println("  Bucket count: {}", map.bucket_count());
+    std::println("  Load factor: {}\n", map.load_factor());
+    std::println("  Bucket #{} chain length: {}", bucketIdx, chainLength);
 
     return 0;
 }
