@@ -43,7 +43,7 @@ int binarySearch(const std::vector<int>& arr, int key, size_t& comparisons) {
     return binary_index;
 }
 
-int hashSearch(const std::unordered_map<int, int>& map, int key) {
+ptrdiff_t hashSearch(const std::unordered_map<int, ptrdiff_t>& map, int key) {
     auto it = map.find(key);
     if (it != map.end()) {
         return it->second;
@@ -52,7 +52,7 @@ int hashSearch(const std::unordered_map<int, int>& map, int key) {
 }
 
 int main() {
-    int n = 10000;
+    size_t n = 10000;
 
     std::mt19937 gen(12345);
     std::uniform_int_distribution<int> dis(0, 99999);
@@ -60,7 +60,7 @@ int main() {
     std::vector<int> arr(n);
     std::ranges::generate(arr, [&] { return dis(gen); });
 
-    std::unordered_map<int, int> map;
+    std::unordered_map<int, ptrdiff_t> map;
     for (auto [i, val] : arr | std::views::enumerate) {
         map.try_emplace(val, i);
     }
@@ -71,7 +71,8 @@ int main() {
     int key = arr[dis(gen) % n];
 
     size_t linearComparisons, binaryComparisons;
-    int linearIndex, binaryIndex, hashIndex;
+    int linearIndex, binaryIndex;
+    ptrdiff_t hashIndex;
 
     linearIndex = linearSearch(arr, key, linearComparisons);
     binaryIndex = binarySearch(sortedArr, key, binaryComparisons);

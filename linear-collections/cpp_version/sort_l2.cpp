@@ -24,7 +24,7 @@ int main() {
     std::println("Sorting {} elements...", n);
 
     auto start = std::chrono::steady_clock::now();
-    for (ptrdiff_t i = 0; i < n - 1; i++) {
+    for (size_t i = 0; i < n - 1; i++) {
         for (size_t j = 0; j < n - i - 1; j++) {
             if (arr1[j] > arr1[j + 1]) {
                 std::swap(arr1[j], arr1[j + 1]);

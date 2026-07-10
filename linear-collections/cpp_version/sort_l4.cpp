@@ -6,18 +6,18 @@
 #include <ranges>
 #include <vector>
 
-void merge(std::vector<int>& arr, int left, int mid, int right) {
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
+void merge(std::vector<int>& arr, ptrdiff_t left, ptrdiff_t mid, ptrdiff_t right) {
+    ptrdiff_t n1 = mid - left + 1;
+    ptrdiff_t n2 = right - mid;
 
     std::vector<int> L(n1), R(n2);
 
-    for (int i = 0; i < n1; i++)
+    for (ptrdiff_t i = 0; i < n1; i++)
         L[i] = arr[left + i];
-    for (int i = 0; i < n2; i++)
+    for (ptrdiff_t i = 0; i < n2; i++)
         R[i] = arr[mid + 1 + i];
 
-    int i = 0, j = 0, k = left;
+    ptrdiff_t i = 0, j = 0, k = left;
 
     while (i < n1 && j < n2) {
         if (L[i] <= R[j])
@@ -32,20 +32,20 @@ void merge(std::vector<int>& arr, int left, int mid, int right) {
         arr[k++] = R[j++];
 }
 
-void mergeSort(std::vector<int>& arr, int left, int right) {
+void mergeSort(std::vector<int>& arr, ptrdiff_t left, ptrdiff_t right) {
     if (left < right) {
-        int mid = left + (right - left) / 2;
+        ptrdiff_t mid = left + (right - left) / 2;
         mergeSort(arr, left, mid);
         mergeSort(arr, mid + 1, right);
         merge(arr, left, mid, right);
     }
 }
 
-int partition(std::vector<int>& arr, int low, int high) {
+ptrdiff_t partition(std::vector<int>& arr, ptrdiff_t low, ptrdiff_t high) {
     int pivot = arr[high];
-    int i = low - 1;
+    ptrdiff_t i = low - 1;
 
-    for (int j = low; j < high; j++) {
+    for (ptrdiff_t j = low; j < high; j++) {
         if (arr[j] <= pivot) {
             i++;
             std::swap(arr[i], arr[j]);
@@ -56,18 +56,18 @@ int partition(std::vector<int>& arr, int low, int high) {
     return i + 1;
 }
 
-void quickSort(std::vector<int>& arr, int low, int high) {
+void quickSort(std::vector<int>& arr, ptrdiff_t low, ptrdiff_t high) {
     if (low < high) {
-        int pi = partition(arr, low, high);
+        ptrdiff_t pi = partition(arr, low, high);
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);
     }
 }
 
-void heapify(std::vector<int>& arr, int n, int i) {
-    int largest = i;
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
+void heapify(std::vector<int>& arr, ptrdiff_t n, ptrdiff_t i) {
+    ptrdiff_t largest = i;
+    ptrdiff_t left = 2 * i + 1;
+    ptrdiff_t right = 2 * i + 2;
 
     if (left < n && arr[left] > arr[largest])
         largest = left;
@@ -80,20 +80,20 @@ void heapify(std::vector<int>& arr, int n, int i) {
     }
 }
 
-void heapSort(std::vector<int>& arr, int n) {
-    for (int i = n / 2 - 1; i >= 0; i--) {
+void heapSort(std::vector<int>& arr, ptrdiff_t n) {
+    for (ptrdiff_t i = n / 2 - 1; i >= 0; i--) {
         heapify(arr, n, i);
     }
 
-    for (int i = n - 1; i > 0; i--) {
+    for (ptrdiff_t i = n - 1; i > 0; i--) {
         std::swap(arr[0], arr[i]);
         heapify(arr, i, 0);
     }
 }
 
-void heapSortWrapper(std::vector<int>& arr, int /*left*/, int right) { heapSort(arr, right + 1); }
+void heapSortWrapper(std::vector<int>& arr, ptrdiff_t /*left*/, ptrdiff_t right) { heapSort(arr, right + 1); }
 
-template <typename Func> double measureTime(Func sortFunc, std::vector<int>& arr, int n) {
+template <typename Func> double measureTime(Func sortFunc, std::vector<int>& arr, ptrdiff_t n) {
     auto start = std::chrono::high_resolution_clock::now();
     sortFunc(arr, 0, n - 1);
     auto end = std::chrono::high_resolution_clock::now();
@@ -119,7 +119,7 @@ int main() {
 
     std::vector<double> timesMerge, timesQuick, timesHeap, timesStdSort;
 
-    for (int n : sizes) {
+    for (ptrdiff_t n : sizes) {
         std::vector<int> original(n);
         std::ranges::generate(original, [&] { return dis(gen); });
 
