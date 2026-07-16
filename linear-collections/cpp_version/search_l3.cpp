@@ -1,24 +1,25 @@
 #include <algorithm>
-#include <chrono>
 #include <format>
 #include <print>
 #include <random>
 #include <ranges>
 #include <vector>
 
+constexpr unsigned kSeed = 12345;
+
 int main() {
     const size_t n = 10000;
     std::vector<int> arr(n);
 
-    std::mt19937 gen(
-        static_cast<unsigned>(std::chrono::steady_clock::now().time_since_epoch().count()));
+    std::mt19937 gen(kSeed);
     std::uniform_int_distribution<int> dis(0, 99999);
 
     std::ranges::generate(arr, [&] { return dis(gen); });
 
     std::ranges::sort(arr);
 
-    int key = arr[dis(gen) % n];
+    std::uniform_int_distribution<std::size_t> idx(0, n - 1);
+    int key = arr[idx(gen)];
 
     std::println("Sorted array (first 20 elements): {}", arr | std::views::take(20));
 

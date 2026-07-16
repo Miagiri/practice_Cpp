@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
+constexpr unsigned kSeed = 12345;
+
 int linearSearch(const std::vector<int>& arr, int key, size_t& comparisons) {
     comparisons = 0;
     auto it = std::ranges::find_if(arr, [&](int x) {
@@ -54,7 +56,7 @@ ptrdiff_t hashSearch(const std::unordered_map<int, ptrdiff_t>& map, int key) {
 int main() {
     size_t n = 10000;
 
-    std::mt19937 gen(12345);
+    std::mt19937 gen(kSeed);
     std::uniform_int_distribution<int> dis(0, 99999);
 
     std::vector<int> arr(n);
@@ -68,7 +70,8 @@ int main() {
     std::vector<int> sortedArr = arr;
     std::ranges::sort(sortedArr);
 
-    int key = arr[dis(gen) % n];
+    std::uniform_int_distribution<std::size_t> idx(0, n - 1);
+    int key = arr[idx(gen)];
 
     size_t linearComparisons, binaryComparisons;
     int linearIndex, binaryIndex;

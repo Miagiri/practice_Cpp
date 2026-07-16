@@ -6,12 +6,13 @@
 #include <ranges>
 #include <vector>
 
+constexpr unsigned kSeed = 12345;
+
 int main() {
     size_t n = 10000;
     std::vector<int> original(n);
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
+    std::mt19937 gen(kSeed);
     std::uniform_int_distribution<> dis(0, 99999);
 
     std::ranges::generate(original, [&] { return dis(gen); });

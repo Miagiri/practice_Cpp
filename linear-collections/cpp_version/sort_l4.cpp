@@ -6,6 +6,8 @@
 #include <ranges>
 #include <vector>
 
+constexpr unsigned kSeed = 12345;
+
 void merge(std::vector<int>& arr, ptrdiff_t left, ptrdiff_t mid, ptrdiff_t right) {
     ptrdiff_t n1 = mid - left + 1;
     ptrdiff_t n2 = right - mid;
@@ -91,7 +93,9 @@ void heapSort(std::vector<int>& arr, ptrdiff_t n) {
     }
 }
 
-void heapSortWrapper(std::vector<int>& arr, ptrdiff_t /*left*/, ptrdiff_t right) { heapSort(arr, right + 1); }
+void heapSortWrapper(std::vector<int>& arr, ptrdiff_t /*left*/, ptrdiff_t right) {
+    heapSort(arr, right + 1);
+}
 
 template <typename Func> double measureTime(Func sortFunc, std::vector<int>& arr, ptrdiff_t n) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -110,7 +114,7 @@ double measureStdSort(std::vector<int>& arr) {
 int main() {
     std::vector<int> sizes = {1000, 10000, 100000};
 
-    std::mt19937 gen(12345);
+    std::mt19937 gen(kSeed);
     std::uniform_int_distribution<int> dis(0, 999999);
 
     std::println("+----------------+----------------+---------+---------+-----------+");
