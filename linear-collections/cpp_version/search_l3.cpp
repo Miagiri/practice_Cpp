@@ -1,25 +1,39 @@
 #include <algorithm>
 #include <format>
+#include <iostream>
 #include <print>
-#include <random>
 #include <ranges>
 #include <vector>
 
-constexpr unsigned kSeed = 12345;
+constexpr int kSearchKey = 42;
 
 int main() {
-    const size_t n = 10000;
-    std::vector<int> arr(n);
+    std::vector<int> arr;
 
-    std::mt19937 gen(kSeed);
-    std::uniform_int_distribution<int> dis(0, 99999);
+    int line_num = 0;
 
-    std::ranges::generate(arr, [&] { return dis(gen); });
+    int value;
+    while (std::cin >> value) {
+        ++line_num;
+        arr.push_back(value);
+    }
+
+    int key = kSearchKey;
+
+    if (std::cin.bad()) {
+        std::println(stderr, "ошибка чтения потока");
+        return 74;
+    }
+    if (std::cin.fail() && !std::cin.eof()) {
+        std::println(stderr, "строка {}: ожидается целое число", line_num + 1);
+        return 65;
+    }
+    if (arr.empty()) {
+        std::println(stderr, "пустой ввод");
+        return 66;
+    }
 
     std::ranges::sort(arr);
-
-    std::uniform_int_distribution<std::size_t> idx(0, n - 1);
-    int key = arr[idx(gen)];
 
     std::println("Sorted array (first 20 elements): {}", arr | std::views::take(20));
 
@@ -33,7 +47,7 @@ int main() {
 
     size_t binary_compare = 0;
     int binary_index = -1;
-    size_t left = 0, right = n - 1;
+    size_t left = 0, right = arr.size() - 1;
 
     while (left <= right) {
         size_t mid = left + (right - left) / 2;
@@ -56,6 +70,17 @@ int main() {
                  linear_index - arr.begin());
     std::println("Binary search: {} comparisons (found at index {} )", binary_compare,
                  binary_index);
+
+    bool found_std = std::ranges::binary_search(arr, key);
+    auto lb = std::ranges::lower_bound(arr, key);
+    std::ptrdiff_t std_index = (lb != arr.end() && *lb == key) ? (lb - arr.begin()) : -1;
+
+    if ((binary_index != -1) != found_std || binary_index != std_index) {
+        std::println(stderr, "Cross-check failed: manual index={}, std index={}", binary_index,
+                     std_index);
+        return 1;
+    }
+    std::println("Cross-check passed: both manual and std agree");
 
     return 0;
 }
